@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Painel de Produção </title>
+    <link rel="icon" href="{{ url_for('static', filename='Logo DI.png')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css.css')}}">
+</head>
+
+
+
+<body>
+    <header class="container">
+        <div class="container">
+
+            <img src="{{url_for('static', filename='Logo DI.png')}}" class="rotate-center">
+
+            <h1> Painel de produção</h1>
+
+            <div class="col-sup">
+                <box class='piscar'>
+                    <h3 class="container">
+                        Em produção
+                    </h3>
+                    <h2 class="container">
+                        {{som}}
+                    </h2>
+                </box>
+                <box class="piscar">
+                    <h3 class="container">
+                        Aguardando armação
+                    </h3>
+                    <h2 class="container">
+                        {{aaga}}
+                    </h2>
+                </box>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <div class='div_central'>
+            <li>
+                <h3>Recebimento estoque
+                    <h2>
+                        {{re}}
+                    </h2>
+                    <h3>OS no estoque: {{are}} </h3>
+
+            </li>
+            <li>
+                <h3>Compra de lentes </h3>
+                <h2>
+                    {{ag}}
+                </h2>
+                <h3>Aguardando entrega: {{aag}} </h3>
+
+
+            </li>
+            <li>
+                <h3>Compra entregue</h3>
+                <h2>
+                    {{cr}}
+                </h2>
+                <h3>A enviar lab: {{acr}} </h3>
+
+            </li>
+
+            <li>
+                <h3>Estoque -> laboratório </h3>
+                <h2>
+                    {{ele}}
+                </h2>
+                <h3>Aguardando montagem: {{aele}} </h3>
+
+
+            </li>
+            <li>
+                <h3>Montagem Finalizada </h3>
+                <h2>
+                    {{mf}}
+                </h2>
+                <h3>Acumulado do mês : {{amf}} </h3>
+            </li>
+
+        </div>
+
+    </div>
+    <div class="container">
+        <box class="box_inferior">
+            <h3>Montagens finalizadas por dia</h3>
+            <img src="data:image/png;base64, {{ plot_montagem }}" />
+        </box>
+
+        <box class="box_inferior">
+
+            <table>
+                <h3>Receitas atrasadas</h3>
+
+
+                {{ receita|safe }}
+
+
+            </table>
+
+        </box>
+
+    </div>
+</body>
+
+<script>
+
+    setTimeout(function () {
+        location.reload();
+    }, 60000); // atualiza a cada 30 segundos
+
+
+</script>
+
+</html>
