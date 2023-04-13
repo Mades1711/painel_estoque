@@ -4,11 +4,11 @@ import seaborn as sns
 import base64
 import io
 from app import app
-from flask import g, render_template
+from flask import render_template
 from flask_caching import Cache
 import pyodbc
 import pandas as pd
-from config import DATABASE_CONFIG
+from decouple import config
 import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use('Agg')
@@ -228,14 +228,12 @@ app.config['CACHE_DEFAULT_TIMEOUT'] = time_remaining
 
 def Connect():
     conn = pyodbc.connect(
-        f"DRIVER={DATABASE_CONFIG['DRIVER']};"
-        f"SERVER={DATABASE_CONFIG['SERVER']};"
-        f"DSN={DATABASE_CONFIG['DSN']};"
-        f"Description={DATABASE_CONFIG['Description']};"
-        f"DATABASE={DATABASE_CONFIG['DATABASE']};"
-        f"UID={DATABASE_CONFIG['UID']};"
-        f"PWD={DATABASE_CONFIG['PWD']};"
-    )
+        "DRIVER={ODBC Driver 17 for SQL Server};"
+        f"SERVER={config('MSSQL_HOST')};"
+        f"DATABASE={config('MSSQL_DATABASE')};"
+        f"UID={config('MSSQL_USER')};"
+        f"PWD={config('MSSQL_PASS')};"
+        )
     return conn
 
 @cache.memoize()
