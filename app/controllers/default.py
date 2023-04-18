@@ -11,6 +11,9 @@ import pandas as pd
 from decouple import config
 import matplotlib
 import matplotlib.pyplot as plt
+import warnings
+
+warnings.filterwarnings('ignore')
 matplotlib.use('Agg')
 
 
@@ -203,7 +206,7 @@ FROM (
     AND ZZ5_CODPRO NOT LIKE '0001075%'
     AND ZZ5_CODPRO NOT LIKE '0001077%'
     AND ZZ5_CODPRO NOT LIKE '0001078%'
-    AND ZZ4_STATUS<>'CL'
+    AND ZZ6_ALTERA in ('Recebimento da loja p/ estoque (pós-venda)','Entrada Laboratório','Aguardando Compra das Lentes','Compra realizada.','Translado estoque -> Laboratorio Externo ','Armação enviada pela loja para montagem no laboratorio')
 	and ZZ4_DTPREV > 20221201
 	AND DATEDIFF(DAY,CONVERT(DATE,ZZ4_DTPREV),CONVERT(DATE,ZZ6_DATA))>0
     GROUP BY 
