@@ -105,8 +105,8 @@ li {
   right: 2.8125em;
   box-shadow: 0em 0.25em 0.25em rgba(0, 0, 0, 0.25);
   border-radius: 0.5em;
-  width: 18%; /*20.75em;*/
-  
+  width: 19%; /*20.75em;*/
+  padding: 0.3rem;
   position: sticky;
   margin-left: auto;
   margin-right: auto;
