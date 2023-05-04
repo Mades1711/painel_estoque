@@ -206,8 +206,9 @@ FROM (
     AND ZZ5_CODPRO NOT LIKE '0001075%'
     AND ZZ5_CODPRO NOT LIKE '0001077%'
     AND ZZ5_CODPRO NOT LIKE '0001078%'
-    AND ZZ6_ALTERA in ('Recebimento da loja p/ estoque (pós-venda)','Entrada Laboratório','Aguardando Compra das Lentes','Compra realizada.','Translado estoque -> Laboratorio Externo ','Armação enviada pela loja para montagem no laboratorio')
+    --AND ZZ6_ALTERA in ('Recebimento da loja p/ estoque (pós-venda)','Entrada Laboratório','Aguardando Compra das Lentes','Compra realizada.','Translado estoque -> Laboratorio Externo ','Armação enviada pela loja para montagem no laboratorio')
 	and ZZ4_DTPREV > 20221201
+    and zz4_status <> 'CL'
 	AND DATEDIFF(DAY,CONVERT(DATE,ZZ4_DTPREV),CONVERT(DATE,ZZ6_DATA))>0
     GROUP BY 
         ZZ6_RECEIT,
@@ -328,6 +329,8 @@ def os_atrasada():
        df['DT última movimentação'] = df['DT última movimentação'].dt.strftime('%d/%m/%y')
        df['DT Prevista'] = pd.to_datetime(df['DT Prevista'])
        df['DT Prevista'] = df['DT Prevista'].dt.strftime('%d/%m/%y')
+       values = ['Recebimento Estoque','Entrada Laboratório','Aguardando Compra das Lentes','Compra realizada','Translado estoque -> Laboratorio Externo']
+       df = df[df['STATUS'].isin(values)]
        return df
     except:
         df = cache.get('os_atrasada')
