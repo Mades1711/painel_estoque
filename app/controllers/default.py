@@ -172,9 +172,11 @@ GROUP BY
 os_atrasadas = """SELECT 
     X.ZZ6_RECEIT as 'OS',
     X.STATUS,
-    X.[DT última movimentação],
+	convert(date,X.[DT última movimentação]) as 'DT última movimentação',
 	X.[DT Prevista],
-	X.[Dias atrasados]
+	X.[Dias atrasados],
+	X.Box
+
 FROM (
     SELECT 
         ZZ6_RECEIT,
@@ -195,7 +197,8 @@ FROM (
             ORDER BY ZZ6_DATA DESC, ZZ6_HORA DESC
         ) AS row_num,
 		convert(date,ZZ4_DTPREV) AS 'DT Prevista',
-		DATEDIFF(DAY,CONVERT(DATE,ZZ4_DTPREV),CONVERT(DATE,ZZ6_DATA)) as 'Dias atrasados'
+		DATEDIFF(DAY,CONVERT(DATE,ZZ4_DTPREV),CONVERT(DATE,ZZ6_DATA)) as 'Dias atrasados',
+		CONCAT(ZZ4_NUBOX, '-', ZZ4_CORBOX) AS 'Box'
     FROM ZZ6010 Z6
     LEFT OUTER JOIN ZZ4010 ZZ4 ON ZZ4_RECEIT = ZZ6_RECEIT AND ZZ4.D_E_L_E_T_ = ''
     LEFT OUTER JOIN ZZ5010 ZZ5 ON ZZ5_RECEIT = ZZ4_RECEIT AND ZZ5.D_E_L_E_T_ = ''
@@ -206,9 +209,9 @@ FROM (
     AND ZZ5_CODPRO NOT LIKE '0001075%'
     AND ZZ5_CODPRO NOT LIKE '0001077%'
     AND ZZ5_CODPRO NOT LIKE '0001078%'
-    --AND ZZ6_ALTERA in ('Recebimento da loja p/ estoque (pós-venda)','Entrada Laboratório','Aguardando Compra das Lentes','Compra realizada.','Translado estoque -> Laboratorio Externo ','Armação enviada pela loja para montagem no laboratorio')
+	--and ZZ6_RECEIT = 'B546189-0701'
+    --AND ZZ6_ALTERA in ('Entrada Laboratório','Translado estoque -> Laboratorio Externo ','Armação enviada pela loja para montagem no laboratorio')
 	and ZZ4_DTPREV > 20221201
-    and zz4_status <> 'CL'
 	AND DATEDIFF(DAY,CONVERT(DATE,ZZ4_DTPREV),CONVERT(DATE,ZZ6_DATA))>0
     GROUP BY 
         ZZ6_RECEIT,
@@ -217,7 +220,10 @@ FROM (
         ZZ6_DATA,
         ZZ6_HORA,
         ZZ6_FILIAL,
-        ZZ4_DTPREV
+        ZZ4_DTPREV,
+		ZZ4_NUBOX,
+		ZZ4_CORBOX
+
 ) X
 WHERE X.row_num = 1
 
@@ -329,8 +335,11 @@ def os_atrasada():
        df['DT última movimentação'] = df['DT última movimentação'].dt.strftime('%d/%m/%y')
        df['DT Prevista'] = pd.to_datetime(df['DT Prevista'])
        df['DT Prevista'] = df['DT Prevista'].dt.strftime('%d/%m/%y')
+       df['DT última movimentação'] = pd.to_datetime(df['DT última movimentação'])
+       df['DT última movimentação'] = df['DT última movimentação'].dt.strftime('%d/%m/%y')
        values = ['Recebimento Estoque','Entrada Laboratório','Aguardando Compra das Lentes','Compra realizada','Translado estoque -> Laboratorio Externo']
        df = df[df['STATUS'].isin(values)]
+       df = df.replace('Translado estoque -> Laboratorio Externo', 'Estoque -> Laboratorio')
        return df
     except:
         df = cache.get('os_atrasada')
